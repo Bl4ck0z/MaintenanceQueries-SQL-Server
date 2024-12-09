@@ -10,8 +10,6 @@
 
 ## Plan de Mantenimiento
 
-Referencia: El plan se basa en scripts de mantenimiento proporcionados por [Ola Hallengren](https://ola.hallengren.com/), reconocidos por su eficiencia y flexibilidad.
-
 ### 1. **Verificación de Integridad de las Bases de Datos**  
 
 Frecuencia: Diario
@@ -187,3 +185,5 @@ END
 CLOSE db_cursor;
 DEALLOCATE db_cursor;
 ```
+
+Referencia: El plan se basa en scripts de mantenimiento proporcionados por [Ola Hallengren](https://ola.hallengren.com/), reconocidos por su eficiencia y flexibilidad.
