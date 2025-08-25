@@ -1,7 +1,6 @@
 -- =====================================================
 -- Transaction Log Backup Job
 -- Schedule: Every 30 minutes during business hours
--- Business Hours: 8 AM to 8 PM, Monday to Saturday
 -- =====================================================
 
 USE [msdb]

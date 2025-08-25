@@ -1,6 +1,5 @@
 -- =====================================================
 -- System Maintenance Job  
--- Purpose: Clean up system tables and logs
 -- Schedule: Weekly on Sundays at 3:00 AM
 -- =====================================================
 
