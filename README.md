@@ -1,189 +1,201 @@
-# Plan de Mantenimiento de Bases de Datos
+# MaintenanceQueries-SQL-Server
 
-## Introducción
+**Enterprise-level SQL Server Maintenance Solution** using Ola Hallengren procedures with automated jobs, monitoring, and alerting.
 
-- **Objetivo**: Describir las tareas de mantenimiento requeridas para garantizar el correcto funcionamiento, integridad, seguridad y rendimiento de las bases de datos en el sistema.
+![SQL Server Maintenance](images/module-66-automation-final-07.png)
 
-- **Alcance**: Este plan abarca todas las bases de datos administradas en el servidor, incluyendo tareas relacionadas con respaldos, recuperación, optimización y limpieza.
+## 📋 Overview
+
+This repository provides a complete maintenance solution for SQL Server databases, featuring:
+
+- **Automated database maintenance** using proven Ola Hallengren procedures
+- **Comprehensive backup strategy** (Full, Differential, Transaction Log)
+- **Performance optimization** through index maintenance and statistics updates
+- **Proactive monitoring** with email alerting
+- **Emergency recovery** procedures for critical situations
+
+## 🏗️ Repository Structure
+
+```
+MaintenanceQueries-SQL-Server/
+├── jobs/                                   # Automated maintenance jobs
+│   ├── AlertingSetup.sql                   # Email configuration
+│   ├── DatabasesBackups.sql                # Full backups - Daily 8 PM
+│   ├── DifferentialBackups.sql             # Differential backups - Every 6 hours
+│   ├── IntegrityCheck.sql                  # Database integrity - Daily 5 AM
+│   ├── LogsCleanUp.sql                     # Log cleanup - Monthly
+│   ├── MonitoringChecks.sql                # Health monitoring - Every 2 hours
+│   ├── OptimizeIndexes.sql                 # Index optimization - Daily 6 AM
+│   ├── SystemMaintenance.sql               # System cleanup - Weekly Sundays
+│   └── TransactionLogBackups.sql           # Log backups - Every 30 min
+├── queries/                                # Utility queries
+│   ├── database_info.sql                   # Database file information
+│   ├── emergency_database_recovery.sql     # Emergency recovery procedures
+│   └── testquerie.sql                      # Test queries
+├── MaintenanceSolution.sql                 # Ola Hallengren main script
+├── images/                                 # Documentation assets
+├── LICENSE
+└── README.md
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- SQL Server 2008 R2 or later
+- `admin` privileges
+- SMTP server access
+- Backup directory
+
+### Installation Steps
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Bl4ck0z/MaintenanceQueries-SQL-Server.git
+   cd MaintenanceQueries-SQL-Server
+   ```
+
+2. **Install Ola Hallengren Solution:**
+   - Download the latest 'MaintenanceSolution.sql' from [https://ola.hallengren.com/](https://ola.hallengren.com/)
+   - Execute it in SQL Server Management Studio
+
+3. **Create backup directories:**
+   ```sql
+   EXEC xp_cmdshell 'mkdir C:\SQLBackups'
+   EXEC xp_cmdshell 'mkdir C:\SQLBackups\Full'
+   EXEC xp_cmdshell 'mkdir C:\SQLBackups\Diff'
+   EXEC xp_cmdshell 'mkdir C:\SQLBackups\Log'
+   ```
+
+4. **Configure email alerts:**
+   - Edit `jobs/AlertingSetup.sql`
+   - Update email addresses and SMTP settings
+   - Execute the script
+
+5. **Deploy maintenance jobs:**
+   - Execute each job script in the `jobs/` folder
+   - Jobs will be created with pre-configured schedules
+
+## 📅 Maintenance Schedule
+
+| Job | Frequency | Time | Purpose |
+|-----|-----------|------|---------|
+| **Integrity Check** | Daily | 5:00 AM | Verify database consistency |
+| **Index Optimization** | Daily | 6:00 AM | Rebuild/reorganize indexes + update statistics |
+| **Transaction Log Backups** | Every 30 min | 8 AM - 8 PM, Mon-Sat | Point-in-time recovery |
+| **Differential Backups** | Every 6 hours | 2 AM, 8 AM, 2 PM, 8 PM | Incremental backups |
+| **Full Database Backups** | Daily | 8:00 PM | Complete database backups |
+| **Monitoring Checks** | Every 2 hours | 8 AM - 8 PM, Mon-Sat | Health monitoring + alerts |
+| **System Maintenance** | Weekly | Sunday 3:00 AM | Clean job history, logs, statistics |
+| **Log Cleanup** | Monthly | 6:30 PM | Shrink transaction logs |
+
+## 💾 Backup Strategy
+
+### Full Backups
+- **Frequency:** Daily at 8:00 PM
+- **Retention:** 7 days
+- **Features:** Compression, checksum verification
+
+### Differential Backups
+- **Frequency:** Every 6
+- **Retention:** 3 days
+- **Purpose:** Reduce restore time and backup window
+
+### Transaction Log Backups
+- **Frequency:** Every 30 minutes during business hours
+- **Retention:** 2 days
+- **Purpose:** Point-in-time recovery capability
+
+## 🔧 Configuration
+
+### Email Settings
+Update these settings in 'AlertingSetup.sql':
+
+```sql
+@email_address = 'sql@company.com',                -- Sender email
+@mailserver_name = 'smtp.company.com',             -- SMTP server
+@port = 587,                                       -- SMTP port
+@username = 'sql@company.com',                     -- SMTP username
+@password = 'password',                            -- SMTP password
+-- Recipients
+@recipients = 'admin@company.com'                  -- Alert recipient
+```
+
+### Backup Paths
+Default backup directory: `C:\SQLBackups`
+
+To change backup paths, update the '@Directory' parameter in:
+- `DatabasesBackups.sql`
+- `DifferentialBackups.sql`
+- `TransactionLogBackups.sql`
+
+### Business Hours
+Default: Monday-Saturday, 8 AM - 6 PM
+
+Update schedules in job files to match your business hours.
+
+## 📊 Monitoring & Alerts
+
+The monitoring system checks for:
+
+- **Disk space** - Alerts when drives < 15% free space
+- **Failed jobs** - Detects job failures in the last 2 hours  
+- **Database status** - Alerts if databases are offline
+- **Backup currency** - Warns about databases without recent backups
+
+Alerts are sent via email during business hours every 2 hours.
+
+## 🛠️ Customization
+
+### Adding Databases
+Jobs automatically target `USER_DATABASES`.
+
+### Modifying Schedules
+Edit the `@active_start_time` and frequency parameters in each job script.
+
+### Changing Retention
+Update `@CleanupTime` parameter in backup jobs.
+
+## 📋 Job Status Verification
+
+Check job execution status:
+```sql
+-- View recent job activity
+SELECT 
+    j.name AS JobName,
+    jh.run_status,
+    jh.run_date,
+    jh.run_time,
+    jh.run_duration,
+    CASE jh.run_status
+        WHEN 0 THEN 'Failed'
+        WHEN 1 THEN 'Succeeded'
+        WHEN 2 THEN 'Retry'
+        WHEN 3 THEN 'Canceled'
+    END AS Status
+FROM msdb.dbo.sysjobs j
+INNER JOIN msdb.dbo.sysjobhistory jh ON j.job_id = jh.job_id
+WHERE j.name LIKE 'MaintenanceQueries%'
+    AND jh.step_id = 0
+ORDER BY jh.run_date DESC, jh.run_time DESC;
+```
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Ola Hallengren** - For the excellent SQL Server Maintenance Solution
+- **Microsoft** - For SQL Server platform
+
+## 📞 Support
+
+For issues and questions:
+1. Check the [Issues](https://github.com/Bl4ck0z/MaintenanceQueries-SQL-Server/issues) section
+2. Review Ola Hallengren documentation at [https://ola.hallengren.com/](https://ola.hallengren.com/)
+3. Create a new issue with detailed information
 
 ---
 
-## Plan de Mantenimiento
-
-### 1. **Verificación de Integridad de las Bases de Datos**  
-
-Frecuencia: Diario
-
-Descripción: Ejecuta un chequeo integral utilizando ```DBCC CHECKDB``` para garantizar la consistencia de las estructuras internas de las bases de datos.
-
-```sql
-EXECUTE [dbo].[DatabaseIntegrityCheck]
-@Databases = 'USER_DATABASES',
-@CheckCommands = 'CHECKDB',
-@LogToTable = 'Y'
-```
-
-### 2. **Optimización de Índices**  
-
-Frecuencia: Diario.
-
-Descripción: Reorganiza y reconstruye índices con niveles de fragmentación específicos para mejorar el rendimiento de las consultas.
-
-```sql
-EXECUTE dbo.IndexOptimize
-@Databases = 'ALL_DATABASES',
-@FragmentationLow = NULL,
-@FragmentationMedium = 'INDEX_REORGANIZE,INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
-@FragmentationHigh = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
-@FragmentationLevel1 = 5,
-@FragmentationLevel2 = 30,
-@Indexes = 'ALL_INDEXES';
-```
-
-### 3. **Actualización de Estadísticas**
-
-Frecuencia: Diario.
-
-Descripción: Actualiza las estadísticas de todas las bases de datos para optimizar la selección de planes de ejecución en SQL Server.
-
-```sql
-EXECUTE dbo.IndexOptimize
-@Databases = 'USER_DATABASES',
-@FragmentationLow = NULL,
-@FragmentationMedium = NULL,
-@FragmentationHigh = NULL,
-@UpdateStatistics = 'ALL'
-```
-
-### 4. **Respaldos de Bases de Datos**
-
-Frecuencia: Diario.
-
-Descripción: Genera respaldos completos de todas las bases de datos en una ubicación definida.
-
-```sql
-DECLARE @DatabaseName NVARCHAR(MAX)
-DECLARE @BackupPath NVARCHAR(MAX)
-DECLARE @SQL NVARCHAR(MAX)
-
--- Define la ruta base donde se almacenarán los respaldos
-SET @BackupPath = 'C:\backups\'
-
--- Tabla temporal para almacenar los nombres de las bases de datos
-CREATE TABLE #Databases (DatabaseName NVARCHAR(MAX))
-
--- Inserta los nombres de las bases de datos en la tabla temporal
-INSERT INTO #Databases (DatabaseName)
-VALUES 
-(N'--'),
-(N'--'),
-(N'--');
-
--- Cursor para recorrer las bases de datos
-DECLARE DatabaseCursor CURSOR FOR 
-SELECT DatabaseName FROM #Databases
-
-OPEN DatabaseCursor
-FETCH NEXT FROM DatabaseCursor INTO @DatabaseName
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    -- Construye el comando BACKUP DATABASE
-    SET @SQL = N'BACKUP DATABASE [' + @DatabaseName + N'] ' +
-               N'TO DISK = N''' + @BackupPath + @DatabaseName + N'.BAK'' ' +
-               N'WITH NOFORMAT, NOINIT, NAME = N''' + @DatabaseName + N'-Full Database Backup'', ' +
-               N'SKIP, NOREWIND, NOUNLOAD, COMPRESSION, STATS = 10;'
-
-    -- Ejecuta el comando
-    PRINT @SQL -- Muestra el comando en el log para validación
-    EXEC sp_executesql @SQL
-
-    FETCH NEXT FROM DatabaseCursor INTO @DatabaseName
-END
-
--- Cierra y libera el cursor
-CLOSE DatabaseCursor
-DEALLOCATE DatabaseCursor
-
--- Elimina la tabla temporal
-DROP TABLE #Databases
-```
-
-### 5. **Reducción de Logs**
-
-Frecuencia: Mensual.
-
-Descripción: Optimiza los archivos de log mediante la reducción controlada de su tamaño, previa configuración al modelo de recuperación SIMPLE y posterior restauración al modelo FULL.
-
-```sql
--- Declaración de tabla para bases de datos y logs
-DECLARE @Databases TABLE (
-    DatabaseName NVARCHAR(128),
-    LogFileName NVARCHAR(128),
-    DesiredSizeMB INT
-);
-
--- Agregar bases de datos y logs a la lista
-INSERT INTO @Databases (DatabaseName, LogFileName, DesiredSizeMB)
-VALUES
-
-    ('---', '---_log', 500), -- Ajusta el tamaño deseado
-    ('---', '---_log', 500),
-    ('---', '---_log', 500), 
-
--- Declaración de variables
-DECLARE @DatabaseName NVARCHAR(128);
-DECLARE @LogFileName NVARCHAR(128);
-DECLARE @DesiredSizeMB INT;
-DECLARE @Query NVARCHAR(MAX);
-
--- Cursor para recorrer la lista
-DECLARE db_cursor CURSOR FOR
-SELECT DatabaseName, LogFileName, DesiredSizeMB
-FROM @Databases;
-
-OPEN db_cursor;
-
-FETCH NEXT FROM db_cursor INTO @DatabaseName, @LogFileName, @DesiredSizeMB;
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    BEGIN TRY
-        -- Validar existencia de la base de datos
-        IF EXISTS (SELECT 1 FROM sys.databases WHERE name = @DatabaseName)
-        BEGIN
-            PRINT 'Procesando base de datos: ' + @DatabaseName + ' y log: ' + @LogFileName;
-
-            -- Cambiar al modelo de recuperación SIMPLE
-            SET @Query = 'USE [master]; ALTER DATABASE [' + @DatabaseName + '] SET RECOVERY SIMPLE;';
-            EXEC sp_executesql @Query;
-
-            -- Reducir el tamaño del archivo de log
-            SET @Query = 'USE [' + @DatabaseName + ']; DBCC SHRINKFILE (N''' + @LogFileName + ''', ' + CAST(@DesiredSizeMB AS NVARCHAR) + ');';
-            EXEC sp_executesql @Query;
-
-            -- Restaurar el modelo de recuperación original (FULL)
-            SET @Query = 'USE [master]; ALTER DATABASE [' + @DatabaseName + '] SET RECOVERY FULL;';
-            EXEC sp_executesql @Query;
-
-            PRINT 'Finalizado: ' + @DatabaseName;
-        END
-        ELSE
-        BEGIN
-            PRINT 'Base de datos no encontrada: ' + @DatabaseName;
-        END
-    END TRY
-    BEGIN CATCH
-        -- Manejo de errores
-        PRINT 'Error procesando la base de datos: ' + @DatabaseName + '. Mensaje: ' + ERROR_MESSAGE();
-    END CATCH;
-
-    FETCH NEXT FROM db_cursor INTO @DatabaseName, @LogFileName, @DesiredSizeMB;
-END
-
--- Cerrar y liberar el cursor
-CLOSE db_cursor;
-DEALLOCATE db_cursor;
-```
-
-Referencia: El plan se basa en scripts de mantenimiento proporcionados por [Ola Hallengren](https://ola.hallengren.com/), reconocidos por su eficiencia y flexibilidad.
+**⭐ Star this repository if it helped you maintain your SQL Server databases!**
