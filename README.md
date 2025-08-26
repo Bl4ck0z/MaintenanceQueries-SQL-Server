@@ -18,7 +18,7 @@ This repository provides a complete maintenance solution for SQL Server database
 
 ```
 MaintenanceQueries-SQL-Server/
-├── jobs/                              # Automated maintenance jobs
+├── jobs
 │   ├── FullBackups.sql                # Full backups
 │   ├── DiffBackups.sql                # Differential backups
 │   ├── IntegrityCheck.sql             # Database integrity
