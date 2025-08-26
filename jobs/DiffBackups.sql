@@ -20,7 +20,6 @@ EXEC dbo.sp_add_jobstep
         @CleanupTime = 72,
         @CleanupMode = ''AFTER_BACKUP'',
         @Compress = ''Y'',
-        @CompressionLevel = ''LOW'',
         @CheckSum = ''Y'',
         @LogToTable = ''Y'',
         @Execute = ''Y''',
