@@ -2,7 +2,6 @@
 -- Database Backup Job
 -- Schedule: Daily at 8:00 PM
 -- =====================================================
-
 USE [msdb]
 GO
 
@@ -15,12 +14,14 @@ EXEC dbo.sp_add_jobstep
     @step_name = N'Run Database Backups',
     @command = N'EXECUTE [dbo].[DatabaseBackup]
         @Databases = ''USER_DATABASES'',
-        @Directory = ''C:\SQLBackups'',
+        @Directory = ''C:\SQLBackups\Full'',
         @BackupType = ''FULL'',
         @Verify = ''Y'',
         @CleanupTime = 168,
-        @CheckSum = ''Y'',
+        @CleanupMode = ''AFTER_BACKUP'',
         @Compress = ''Y'',
+        @CompressionLevel = ''LOW'',
+        @CheckSum = ''Y'',
         @LogToTable = ''Y'',
         @Execute = ''Y''',
     @database_name = N'master'
@@ -30,6 +31,7 @@ EXEC dbo.sp_add_schedule
     @schedule_name = N'Daily Database Backup',
     @freq_type = 4,
     @freq_interval = 1,
+    @freq_recurrence_factor = 1,
     @active_start_time = 200000
 GO
 
