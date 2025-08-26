@@ -2,8 +2,6 @@
 
 **Enterprise-level SQL Server Maintenance Solution** using Ola Hallengren procedures with automated jobs for backup, optimization, and integrity checks.
 
-![SQL Server Maintenance](images/2025-08-26-2014-29-58.png)
-
 ## Overview
 
 This repository provides a complete maintenance solution for SQL Server databases, featuring:
