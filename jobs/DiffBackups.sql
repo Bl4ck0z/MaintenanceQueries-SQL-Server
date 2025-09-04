@@ -18,9 +18,10 @@ EXEC dbo.sp_add_jobstep
         @BackupType = ''DIFF'',
         @Verify = ''Y'',
         @CleanupTime = 72,
-        @CleanupMode = ''AFTER_BACKUP'',
         @Compress = ''Y'',
         @CheckSum = ''Y'',
+	@DirectoryStructure = ''{DatabaseName}'',
+	2FileName = ''{Year}{Month}{Day}.{FileExtension}'',
         @LogToTable = ''Y'',
         @Execute = ''Y''',
     @database_name = N'master'

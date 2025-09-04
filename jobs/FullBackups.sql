@@ -21,6 +21,8 @@ EXEC dbo.sp_add_jobstep
         @CleanupMode = ''AFTER_BACKUP'',
         @Compress = ''Y'',
         @CheckSum = ''Y'',
+	@DirectoryStructure = ''{DatabaseName}'',
+	@FileName = ''{Year}{Month}{Day}.{FileExtemsion}'',
         @LogToTable = ''Y'',
         @Execute = ''Y''',
     @database_name = N'master'
