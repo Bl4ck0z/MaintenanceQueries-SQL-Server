@@ -14,15 +14,14 @@ EXEC dbo.sp_add_jobstep
     @step_name = N'Run Database Backups',
     @command = N'EXECUTE [dbo].[DatabaseBackup]
         @Databases = ''USER_DATABASES'',
-        @Directory = ''C:\SQLBackups\Full'',
+        @Directory = ''C:\'',
         @BackupType = ''FULL'',
         @Verify = ''Y'',
         @CleanupTime = 168,
         @CleanupMode = ''AFTER_BACKUP'',
         @Compress = ''Y'',
         @CheckSum = ''Y'',
-	@DirectoryStructure = ''{DatabaseName}'',
-	@FileName = ''{Year}{Month}{Day}.{FileExtemsion}'',
+	@FileName = ''{BackupType}_{Year}{Month}{Day}_{Hour}{Minute}.{FileExtension}'',
         @LogToTable = ''Y'',
         @Execute = ''Y''',
     @database_name = N'master'

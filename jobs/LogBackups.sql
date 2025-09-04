@@ -15,7 +15,7 @@ EXEC dbo.sp_add_jobstep
     @step_name = N'Run Transaction Log Backups',
     @command = N'EXECUTE [dbo].[DatabaseBackup]
         @Databases = ''USER_DATABASES'',
-        @Directory = ''C:\SQLBackups\Log'',
+        @Directory = ''C:\'',
         @BackupType = ''LOG'',
         @ChangeBackupType = ''Y'',
         @Verify = ''Y'',
@@ -23,8 +23,7 @@ EXEC dbo.sp_add_jobstep
         @CleanupMode = ''AFTER_BACKUP'',
         @CheckSum = ''Y'',
         @Compress = ''Y'',
-	@DirectoryStructure = ''{DatabaseName}'',
-	@FileName = ''{Year}{Month}{Hour}_{Hour}{Minute}.{FileExtension}'',
+	@FileName = ''{BackupType}_{Year}{Month}{Day}_{Hour}{Minute}.{FileExtension}'',
         @LogToTable = ''Y'',
         @Execute = ''Y''',
     @database_name = N'master'

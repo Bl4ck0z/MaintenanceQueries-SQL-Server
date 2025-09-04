@@ -20,8 +20,7 @@ EXEC dbo.sp_add_jobstep
         @CleanupTime = 72,
         @Compress = ''Y'',
         @CheckSum = ''Y'',
-	@DirectoryStructure = ''{DatabaseName}'',
-	2FileName = ''{Year}{Month}{Day}.{FileExtension}'',
+	@FileName = ''{BackupType}_{Year}{Month}{Day}_{Hour}{Minute}.{FileExtension}'',
         @LogToTable = ''Y'',
         @Execute = ''Y''',
     @database_name = N'master'
